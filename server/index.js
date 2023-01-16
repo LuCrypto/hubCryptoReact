@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.static("client/build"));
 
 app.get("/api", (_, res) => {
-    res.json({ message: "Test from server!" });
+    res.json({ message: "NEW Test from server!" });
 });
 
 app.get("/*", (_, res) => {
