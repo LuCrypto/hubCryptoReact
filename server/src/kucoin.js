@@ -1,4 +1,4 @@
-const { roundMe } = require('./utilitaire.js');
+const { roundMe, fs } = require('./utilitaire.js');
 
 // Kucoin
 class KucoinClass {
@@ -13,6 +13,30 @@ class KucoinClass {
         this.kucoinApi = require('kucoin-node-api')
         this.kucoinApi.init(_config)
         this.prefix = '===Kucoin | '
+
+        setInterval(() => {
+            this.update()
+        }, 1000 * 60);
+    }
+
+    update = async () => {
+        console.log(this.prefix + 'UPDATE')
+
+        const [assetKucoin, total] = await this.kucoinWallet()
+        console.log(assetKucoin)
+
+        const saveKucoinJSON = {
+            total: total,
+            assets: assetKucoin
+        }
+
+        await fs.writeFile('./server/src/data/kucoin.json', JSON.stringify(saveKucoinJSON), (err) => {
+            if (err) {
+                console.log('Error writing file', err);
+            } else {
+                console.log('Successfully wrote file');
+            }
+        });
     }
 
     // Get fiat price currencies
@@ -83,10 +107,10 @@ class KucoinClass {
             let result = roundMe(arrayWalletUserMainFiat[element.asset] * element.amount, 2)
             arrayFinal.push({
                 asset: element.asset,
-                amount: element.amount,
                 type: element.type,
-                price: arrayWalletUserMainFiat[element.asset],
-                total: result
+                amount: parseFloat(element.amount),
+                price: parseFloat(arrayWalletUserMainFiat[element.asset]),
+                total: parseFloat(result)
             })
 
             somme += result
@@ -102,19 +126,19 @@ class KucoinClass {
             let result = roundMe(arrayWalletUserTradeFiat[element.asset] * element.amount, 2)
             arrayFinal.push({
                 asset: element.asset,
-                amount: element.amount,
                 type: element.type,
-                price: arrayWalletUserTradeFiat[element.asset],
-                total: result
+                amount: parseFloat(element.amount),
+                price: parseFloat(arrayWalletUserTradeFiat[element.asset]),
+                total: parseFloat(result)
             })
 
             somme += result
         })
 
-        // console.log('arrayFinal : ', arrayFinal)
+        console.log('arrayFinal : ', arrayFinal)
         console.log(this.prefix + 'Somme finale : ', somme)
 
-        return roundMe(somme, 2)
+        return [arrayFinal, roundMe(somme, 2)]
     }
 }
 

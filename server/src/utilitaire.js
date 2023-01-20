@@ -1,3 +1,4 @@
+const fs = require('fs').promises;
 const assert = require('assert');
 // Utilitaires
 
@@ -34,7 +35,7 @@ const getBalanceToken = async (prefixNetwork, addressPublic, web3Network, abi, c
     const balance = await contract.methods.balanceOf(addressPublic).call() / 10 ** decimalsMultiply;
     console.log(prefixNetwork + display + ' : ', balance);
 
-    return balance;
+    return { display, balance };
 }
 
 
@@ -43,5 +44,6 @@ module.exports = {
     roundMe,
     promisify,
     getBalanceToken,
-    assert
+    assert,
+    fs
 }

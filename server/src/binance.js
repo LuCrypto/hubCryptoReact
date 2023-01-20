@@ -1,4 +1,4 @@
-const { roundMe, assert } = require('./utilitaire.js');
+const { roundMe, fs } = require('./utilitaire.js');
 
 // Binance
 class BinanceClass {
@@ -12,26 +12,59 @@ class BinanceClass {
         this.client = _client
         this.prefix = '===Binance | '
 
-        this.arrayWalletUser = null
+        // Init data
         this.btcPriceDollard = null
+        this.sommeWalletSpot = null
+        this.stakingFlexible = null
+        this.stakingLock = null
+        this.totalInEarn = null
+        this.total = null
 
-        this.update()
-
+        setInterval(() => {
+            this.update()
+        }, 1000 * 60);
     }
 
+    // Mettre à jour binance.json
     update = async () => {
-        // walletSpotBinance
-        this.arrayWalletUser = await this.client.userAsset().then(response => {
-            return response.data
+        console.log(this.prefix + 'UPDATE')
+
+        // Get price BTC
+        this.btcPriceDollard = await this.client.avgPrice('BTCBUSD').then(response => {
+            return parseFloat(response.data.price)
         })
 
-        // get price BTC
-        this.btcPriceDollard = await this.client.avgPrice('BTCBUSD').then(response => {
-            return response.data.price
-        })
+        // Call functions
+        this.sommeWalletSpot = await this.sommeWalletSpotBinance()
+        this.stakingFlexible = await this.earnStakingFlexible()
+        this.stakingLock = await this.earnStakingLock()
+
+        this.totalInEarn = parseFloat(this.stakingFlexible + this.stakingLock)
+        this.total = parseFloat(this.totalInEarn + this.sommeWalletSpot)
+
+        const saveBinanceJSON = {
+            total: this.total,
+            totalInEarn: this.totalInEarn,
+
+            btcPriceDollard: this.btcPriceDollard,
+            sommeWalletSpot: this.sommeWalletSpot,
+            stakingFlexible: this.stakingFlexible,
+            stakingLock: this.stakingLock,
+
+            assets: []
+        }
+
+        await fs.writeFile('./server/src/data/binance.json', JSON.stringify(saveBinanceJSON), (err) => {
+            if (err) {
+                console.log('Error writing file', err);
+            } else {
+                console.log('Successfully wrote file');
+            }
+        });
     }
 
-    sommeWalletSpotBinance = async (btcPriceDollard) => {
+    // Return somme WALLET SPOT in dollard
+    sommeWalletSpotBinance = async () => {
         /*
         arrayWalletUser
         {
@@ -45,15 +78,16 @@ class BinanceClass {
         },
         etc...
         */
-
-        // assert of this.arrayWalletUser !== null
-        // assert.notStrictEqual(this.arrayWalletUser, null, 'ERROR : this.arrayWalletUser === null')
+        // walletSpotBinance
+        const arrayWalletUser = await this.client.userAsset().then(response => {
+            return response.data
+        })
 
         let sommeSpot = 0
-        this.arrayWalletUser.map((element) => {
+        arrayWalletUser.map((element) => {
             // console.log('asset : ', element.asset)
             // console.log('Quantité : ', element.btcValuation * btcPriceDollard)
-            let montantDollard = Math.round((element.btcValuation * btcPriceDollard) * 100) / 100
+            let montantDollard = Math.round((element.btcValuation * this.btcPriceDollard) * 100) / 100
             sommeSpot += montantDollard
             // console.log('Montant en dollard : ', montantDollard)
         })
@@ -61,6 +95,7 @@ class BinanceClass {
         return roundMe(sommeSpot, 2)
     }
 
+    // Return somme of all earn in STAKING FLEXIBLE
     earnStakingFlexible = async () => {
         // EARN STAKING flexible
         let arrayStakingFlexible = []
@@ -95,6 +130,7 @@ class BinanceClass {
         return roundMe(sommeStakingFlexible, 2)
     }
 
+    // Return somme of all earn in STAKING LOCK
     earnStakingLock = async () => {
         // EARN STAKING lock
         let arrayStakingLock = []
@@ -119,29 +155,6 @@ class BinanceClass {
         }))
 
         return roundMe(sommeStakingLock, 2)
-    }
-
-    // userAsset -> balance Binance
-    // avgPrice  -> prix moyen d'un token
-    binanceWallet = async () => {
-        const sommeEarnStakingFlexible = await this.earnStakingFlexible()
-        const sommeEarnStakingLock = await this.earnStakingLock()
-        const sommeSpot = await this.sommeWalletSpotBinance(btcPriceDollard)
-        const sommeEarn = sommeEarnStakingFlexible + sommeEarnStakingLock
-        const sommeFinale = sommeEarn + sommeSpot
-
-        console.log(this.prefix + 'btcPriceDollard : ', btcPriceDollard + ' $\n\n')
-        console.log(this.prefix + 'sommeEarnStakingLock : ', sommeEarnStakingLock)
-        console.log(this.prefix + 'sommeEarnStakingFlexible : ', sommeEarnStakingFlexible)
-        console.log(this.prefix + 'Somme spot finale : ', sommeSpot)
-        console.log(this.prefix + 'Somme earn finale : ', sommeEarn)
-        console.log(this.prefix + 'Somme finale : ', sommeFinale)
-
-        return {
-            name: "binance",
-            total: roundMe(sommeFinale),
-            assets: []
-        }
     }
 }
 
