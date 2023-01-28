@@ -1,5 +1,7 @@
 const { initDataExchange, readDataExchange } = require('./src/exchanges');
 const { initDataDefi, readDataDefi } = require('./src/defi');
+const CoinMarketCapClass = require('./src/utilitaire/coinmarketcap');
+require('dotenv').config()
 
 const myServer = () => {
     // Server setup
@@ -15,7 +17,7 @@ const myServer = () => {
         console.log('/datahubcrypto CALL');
 
         const valueExchange = await readDataExchange();
-        // const valueDefi = await readDataDefi();
+        const valueDefi = await readDataDefi();
 
         let finalValue = {
             exchanges: valueExchange,
@@ -23,6 +25,7 @@ const myServer = () => {
         }
 
         console.log('finalValue', finalValue);
+
         res.json(finalValue);
     });
 
@@ -36,10 +39,17 @@ const myServer = () => {
 }
 
 const main = async () => {
-    myServer()
+    // Get data from coinmarketcap
+    const coinMarketCap = new CoinMarketCapClass();
+    await coinMarketCap.updateData()
 
-    // initDataExchange()
+    // const valueExchange = await readDataDefi();
+    // console.log('valueExchange', valueExchange);
+
+    initDataExchange()
     initDataDefi()
+
+    myServer()
 }
 
 main()

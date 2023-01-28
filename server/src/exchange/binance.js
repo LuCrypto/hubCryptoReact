@@ -1,12 +1,12 @@
-const { roundMe, fs } = require('./utilitaire.js');
+const { roundMe, fs } = require('../utilitaire/utilitaire.js');
 
 // Binance
 class BinanceClass {
     constructor() {
         const { Spot } = require('@binance/connector');
 
-        const _apiKeyBinance = 'sjhAdf5XMiJFC7ykBBFqKKTUJ7Okkmi9hCHboUGjZ2iu095I4oNzUu1r1VwkIcmU'
-        const _apiSecretBinance = 'vyOFcZvZpYoJjJNIaN4a1P5bkL2nUrOIn7W5jUUUPnXE9pixQvUhzG1N7jwzahx2'
+        const _apiKeyBinance = process.env.BINANCE_API_KEY_PUBLIC
+        const _apiSecretBinance = process.env.BINANCE_API_KEY_PRIVATE
         const _client = new Spot(_apiKeyBinance, _apiSecretBinance)
 
         this.client = _client
@@ -22,7 +22,7 @@ class BinanceClass {
 
         setInterval(() => {
             this.update()
-        }, 1000 * 60);
+        }, 1000 * process.env.REFRESH_TIME_FOR_EXCHANGE);
     }
 
     // Mettre à jour binance.json

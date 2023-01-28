@@ -3,126 +3,52 @@
 import React from 'react'
 import './App.css'
 import './style.css'
-
-const Binance = (props) => {
-    return (
-        <div className="boxes">
-            <div className="header">
-                <button>Fermer</button>
-                <h2>{props.data.name}</h2>
-                <h3>Total : {props.data.json.total}$</h3>
-            </div>
-            <div className="content">
-                <ul>
-                    {props.data.json.assets.map((asset, index) => {
-                        return (
-                            <li key={index}>
-
-                                <h3>{asset.name}</h3>
-                                <h4>{asset.number}</h4>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </div>
-        </div>
-    )
-}
-
-const Kucoin = (props) => {
-    console.log('Kucoin : ', props)
-    console.log('Kucoin : ', props.data.json)
-
-    return (
-        <div className="boxes">
-            <div className="header">
-                <button>Fermer</button>
-                <h2>{props.data.name}</h2>
-                <h3>Total : {props.data.json.total}$</h3>
-            </div>
-            <div className="content">
-                <ul className="content">
-                    <li className='alignText'>
-                        <h3>Asset : </h3>
-                        <h4>Type : </h4>
-                        <h4>Amount : </h4>
-                        <h4>Price : </h4>
-                        <h4>Total : </h4>
-                    </li>
-                    {props.data.json.assets.map((asset, index) => {
-                        return (
-                            <li key={index}>
-                                <h3>{asset.asset}</h3>
-                                <h4>{asset.type}</h4>
-                                <h4>{asset.amount}</h4>
-                                <h4>{asset.price}</h4>
-                                <h4>{asset.total}</h4>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </div>
-        </div>
-    )
-}
-
-const Bybit = (props) => {
-    console.log('Bybit : ', props)
-    console.log('Bybit : ', props.data.json)
-
-    return (
-        <div className="boxes">
-            <div className="header">
-                <button>Fermer</button>
-                <h2>{props.data.name}</h2>
-                <h3>Total : {props.data.json.total}$</h3>
-            </div>
-            <div className="content">
-                <ul className="content">
-                    <li className='alignText'>
-                        <h3>Coin : </h3>
-                        <h4>Lock : </h4>
-                        <h4>Free : </h4>
-                        <h4>Total : </h4>
-                    </li>
-                    {props.data.json.assets.map((asset, index) => {
-                        return (
-                            <li key={index}>
-                                <h3>{asset.coin}</h3>
-                                <h4>{asset.lock}</h4>
-                                <h4>{asset.free}</h4>
-                                <h4>{asset.total}</h4>
-                            </li>
-                        )
-                    })}
-                </ul>
-            </div>
-        </div>
-    )
-}
+import Tronlink from './databoxe/tronlink'
+import Binance from './databoxe/binance'
+import Kucoin from './databoxe/kucoin'
+import Bybit from './databoxe/bybit'
+import Bsc from './databoxe/bsc'
+import Aptos from './databoxe/aptos'
+import Ethereum from './databoxe/ethereum'
+import Polygon from './databoxe/polygon'
 
 
-class Exchange extends React.Component {
+class DataBoxe extends React.Component {
     constructor(props) {
         super(props);
+
         console.log('CONSTRUCTOR')
         console.log('props : ', props)
         console.log('this.props.data.name : ', this.props.data.name)
-        console.log('this.props.data.name.localeCompare(\'binance\') : ', this.props.data.name.localeCompare('binance'))
+
+        this.array = {
+            binance: <Binance data={this.props.data} />
+        }
+
+    }
+
+    initialisation() {
+        const componentMap = {
+            binance: <Binance data={this.props.data} />,
+            kucoin: <Kucoin data={this.props.data} />,
+            bybit: <Bybit data={this.props.data} />,
+            bsc: <Bsc data={this.props.data} />,
+            aptos: <Aptos data={this.props.data} />,
+            ethereum: <Ethereum data={this.props.data} />,
+            polygon: <Polygon data={this.props.data} />,
+            tronlink: <Tronlink data={this.props.data} />
+        }
+
+        const ComponentToRender = componentMap[this.props.data.name] || <div className="boxes"><p>NON TRAITE !!!</p></div>;
+
+        return ComponentToRender
     }
 
     render() {
-        if (this.props.data.name.localeCompare('binance') === 0) {
-            return <Binance data={this.props.data} />
-        } else if (this.props.data.name.localeCompare('kucoin') === 0) {
-            return <Kucoin data={this.props.data} />
-        } else if (this.props.data.name.localeCompare('bybit') === 0) {
-            return <Bybit data={this.props.data} />
-        } else {
-            <div className="boxes">
-                NON TRAITE !!!
-            </div>
-        }
+
+        return (
+            this.initialisation()
+        )
     }
 }
 
@@ -159,12 +85,19 @@ class Main extends React.Component {
         if (this.state.error) {
             return <div>Error: {this.state.error.message}</div>;
         }
-        if (this.state.data && this.state.data.exchanges) {
+        if (this.state.data && this.state.data.defi) {
+
+            console.log('this.state.data.exchanges : ', this.state.data.defi)
+            console.log('this.state.data.exchanges : ', this.state.data.exchanges)
+
+            let arrayAll = this.state.data.defi.concat(this.state.data.exchanges);
+            console.log('arrayAll : ', arrayAll)
+
             return (
-                this.state.data.exchanges.map((exchange) =>
-                    <Exchange data={exchange} />
+                arrayAll.map((element) =>
+                    <DataBoxe data={element} />
                 )
-            );
+            )
         } else {
             return <div>No data</div>;
         }

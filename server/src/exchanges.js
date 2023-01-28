@@ -1,7 +1,7 @@
-const BinanceClass = require('./binance');
-const KucoinClass = require('./kucoin');
-const BybitClass = require('./bybit');
-const { fs } = require('./utilitaire');
+const BinanceClass = require('./exchange/binance');
+const KucoinClass = require('./exchange/kucoin');
+const BybitClass = require('./exchange/bybit');
+const { fs } = require('./utilitaire/utilitaire');
 
 // Init data exchanges in json files
 const initDataExchange = async () => {

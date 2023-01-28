@@ -1,12 +1,12 @@
-const { roundMe, fs } = require('./utilitaire.js');
+const { roundMe, fs } = require('../utilitaire/utilitaire.js');
 
 // Kucoin
 class KucoinClass {
     constructor() {
         const _config = {
-            apiKey: '619aba9457fddc0001b57956',
-            secretKey: '50518f25-c728-44ca-b796-6bc22a2154b8',
-            passphrase: 'jeSuisUnePhrase07',
+            apiKey: process.env.KUCOIN_API_KEY_PUBLIC,
+            secretKey: process.env.KUCOIN_API_KEY_PRIVATE,
+            passphrase: process.env.KUCOIN_PASSPHRASE,
             environment: 'live'
         }
 
@@ -16,7 +16,7 @@ class KucoinClass {
 
         setInterval(() => {
             this.update()
-        }, 1000 * 60);
+        }, 1000 * process.env.REFRESH_TIME_FOR_EXCHANGE);
     }
 
     update = async () => {
@@ -49,7 +49,7 @@ class KucoinClass {
 
         try {
             let r = await this.kucoinApi.getFiatPrice(params)
-            // console.log(r.data)
+            console.log(r.data)
             return r.data
         }
         catch (error) {

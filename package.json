@@ -20,10 +20,14 @@
     "license": "ISC",
     "dependencies": {
         "@binance/connector": "^2.0.0-rc.4",
+        "aptos": "^1.5.0",
         "bybit-api": "^3.3.8",
+        "coinmarketcap-api": "^3.1.1",
+        "dotenv": "^16.0.3",
         "express": "^4.18.2",
         "kucoin-node-api": "^2.1.5",
         "nodemon": "^2.0.20",
+        "tronweb": "^5.0.0",
         "web3": "^1.8.1"
     }
 }

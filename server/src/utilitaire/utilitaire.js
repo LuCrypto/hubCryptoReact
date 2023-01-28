@@ -35,7 +35,7 @@ const getBalanceToken = async (prefixNetwork, addressPublic, web3Network, abi, c
     const balance = await contract.methods.balanceOf(addressPublic).call() / 10 ** decimalsMultiply;
     console.log(prefixNetwork + display + ' : ', balance);
 
-    return { display, balance };
+    return balance;
 }
 
 
