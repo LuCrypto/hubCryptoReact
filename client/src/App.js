@@ -24,7 +24,6 @@ class DataBoxe extends React.Component {
         this.array = {
             binance: <Binance data={this.props.data} />
         }
-
     }
 
     initialisation() {
@@ -104,8 +103,8 @@ class Main extends React.Component {
     }
 }
 
-
 const App = () => {
+
     return (
         <div className='app'>
             <Main />

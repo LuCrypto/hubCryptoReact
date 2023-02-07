@@ -89,7 +89,13 @@ class AptosClass {
 
         // Put price and value for each asset
         assets.forEach((asset) => {
-            const price = parseFloat(this.DATA_PRICE_CRYPTO[asset.symbol].quote.USD.price);
+            let price = null;
+            try {
+                price = parseFloat(this.DATA_PRICE_CRYPTO[asset.symbol].quote.USD.price);
+            } catch (error) {
+                console.log('ERROR : ', error);
+            }
+
             if (price) {
                 asset.value = roundMe(parseFloat(price) * parseFloat(asset.amount), 2);
                 asset.price = price;

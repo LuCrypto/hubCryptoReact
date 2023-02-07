@@ -43,11 +43,8 @@ const main = async () => {
     const coinMarketCap = new CoinMarketCapClass();
     await coinMarketCap.updateData()
 
-    // const valueExchange = await readDataDefi();
-    // console.log('valueExchange', valueExchange);
-
-    initDataExchange()
-    initDataDefi()
+    await initDataExchange()
+    await initDataDefi()
 
     myServer()
 }

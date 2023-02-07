@@ -8,6 +8,7 @@ const initDataExchange = async () => {
     // EXCHANGE
     // ==================================
 
+    // Update data exchanges
     const instanceBinance = new BinanceClass()
     const promesseBinance = instanceBinance.update()
 
