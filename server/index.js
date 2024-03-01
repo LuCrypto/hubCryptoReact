@@ -40,8 +40,8 @@ const myServer = () => {
 
 const main = async () => {
     // Get data from coinmarketcap
-    const coinMarketCap = new CoinMarketCapClass();
-    await coinMarketCap.updateData()
+    // const coinMarketCap = new CoinMarketCapClass();
+    // await coinMarketCap.updateData()
 
     await initDataExchange()
     await initDataDefi()

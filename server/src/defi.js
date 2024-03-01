@@ -21,8 +21,8 @@ const initDataDefi = async () => {
     const aptosInstance = new AptosClass(dataPriceCrypto);
     const promesseAptos = aptosInstance.update()
 
-    const instanceTronlink = new TronlinkClass(dataPriceCrypto);
-    const promesseTronlink = instanceTronlink.update()
+    // const instanceTronlink = new TronlinkClass(dataPriceCrypto);
+    // const promesseTronlink = instanceTronlink.update()
 
     const instanceEthereum = new EthereumClass(web3, dataPriceCrypto);
     const promesseEthereum = instanceEthereum.update()
@@ -33,7 +33,7 @@ const initDataDefi = async () => {
     // Cosmos (Atom) : don't work
     // cosmos()
 
-    const arrayData = [promesseAptos, promesseBinance, promesseEthereum, promessePolygon, promesseTronlink]
+    const arrayData = [promesseAptos, promesseBinance, promesseEthereum, promessePolygon]
     return Promise.all(arrayData).then((values) => {
         return readDataDefi()
     })

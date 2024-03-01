@@ -12,13 +12,13 @@ const initDataExchange = async () => {
     const instanceBinance = new BinanceClass()
     const promesseBinance = instanceBinance.update()
 
-    const instanceKucoin = new KucoinClass()
-    const promesseKucoin = instanceKucoin.update()
+    // const instanceKucoin = new KucoinClass()
+    // const promesseKucoin = instanceKucoin.update()
 
     const totalBybit = new BybitClass()
     const promesseBybit = totalBybit.update()
 
-    const arrayData = [promesseBinance, promesseKucoin, promesseBybit]
+    const arrayData = [promesseBinance, promesseBybit]
     return Promise.all(arrayData).then(async (values) => {
         return readDataExchange()
     })
@@ -26,7 +26,7 @@ const initDataExchange = async () => {
 
 // Read data exchanges in json files
 const readDataExchange = () => {
-    const arrayExchange = ['binance', 'kucoin', 'bybit']
+    const arrayExchange = ['binance', 'bybit']
 
     const arrayData = arrayExchange.map(async (exchange) => {
         const json = JSON.parse(await fs.readFile(`./server/src/data/${exchange}.json`, 'utf8'));

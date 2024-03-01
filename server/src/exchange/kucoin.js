@@ -96,6 +96,8 @@ class KucoinClass {
         const { arrayWalletUserMain, arrayWalletUserTrade } = await this.getBalanceAccounts()
         if (arrayWalletUserMain == -1)
             return -1
+
+        console.log('arrayWalletUserMain : ', arrayWalletUserMain)
         const arrayWalletUserMainFiat = await this.getFiatCurrencies(arrayWalletUserMain.map((element) => {
             return element.asset
         }))

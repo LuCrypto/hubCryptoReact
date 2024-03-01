@@ -57,6 +57,10 @@ class BybitClass {
         console.log('arrayBalances : ', arrayBalances.result);
         console.log('arrayBalances : ', arrayBalances.result.balances);
 
+        if (arrayBalances.result.balances === undefined) {
+            return [0, 0];
+        }
+
         // Pas bon de faire comme ça pour la somme
         let somme = 0;
         arrayBalances.result.balances.forEach((element) => {
